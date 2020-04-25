@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="版本:1.2.0  Seata主要包括三大组件:TC、TM和RM。TC（Transaction Coordinator）主要负责全局事务的提交和回滚，是seata的关键组件。对可用性及性能都有着较高的要求。 seata TC实现源码Server的各个包：  coordinator:协调器核心模块 event:事件管理模块 lock:资源锁模块 metrics: metrics指标模块 sessi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="seata-server">
+<meta property="og:url" content="http://yoursite.com/2020/04/25/seata-server/index.html">
+<meta property="og:site_name" content="Yang">
+<meta property="og:description" content="版本:1.2.0  Seata主要包括三大组件:TC、TM和RM。TC（Transaction Coordinator）主要负责全局事务的提交和回滚，是seata的关键组件。对可用性及性能都有着较高的要求。 seata TC实现源码Server的各个包：  coordinator:协调器核心模块 event:事件管理模块 lock:资源锁模块 metrics: metrics指标模块 sessi">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-25T11:32:50.000Z">
+<meta property="article:modified_time" content="2020-04-25T03:47:40.827Z">
+<meta property="article:author" content="wei">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/04/25/seata-server/"/>
+
+
+
+
+
+  <title>seata-server | Yang</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yang</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/25/seata-server/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yang">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">seata-server</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-04-25T11:32:50+00:00">
+                2020-04-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>版本:1.2.0</p>
+</blockquote>
+<p>Seata主要包括三大组件:TC、TM和RM。TC（Transaction Coordinator）主要负责全局事务的提交和回滚，是seata的关键组件。对可用性及性能都有着较高的要求。</p>
+<p>seata TC实现源码Server的各个包：</p>
+<ul>
+<li>coordinator:协调器核心模块</li>
+<li>event:事件管理模块</li>
+<li>lock:资源锁模块</li>
+<li>metrics: metrics指标模块</li>
+<li>session:session通信模块</li>
+<li>storage:事务信息存储模块，file和DB</li>
+<li>store:存储配置模块</li>
+<li>transaction:事务模块<a id="more"></a>
+<h3 id="Server启动流程"><a href="#Server启动流程" class="headerlink" title="Server启动流程"></a>Server启动流程</h3></li>
+</ul>
+<p>server启动的入口是<code>Server.main</code>方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The entry point of application.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> args the input arguments</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> IOException the io exception</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="comment">//初始化参数解析器</span></span><br><span class="line">    ParameterParser parameterParser = <span class="keyword">new</span> ParameterParser(args);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//初始化度量指标metrics</span></span><br><span class="line">    MetricsManager.get().init();</span><br><span class="line">    <span class="comment">//设置日志存储模式 file/Db</span></span><br><span class="line">    System.setProperty(ConfigurationKeys.STORE_MODE, parameterParser.getStoreMode());</span><br><span class="line">    <span class="comment">//创建nettyserver</span></span><br><span class="line">    RpcServer rpcServer = <span class="keyword">new</span> RpcServer(WORKING_THREADS);</span><br><span class="line">    <span class="comment">//server port</span></span><br><span class="line">    rpcServer.setListenPort(parameterParser.getPort());</span><br><span class="line">    UUIDGenerator.init(parameterParser.getServerNode());</span><br><span class="line">    <span class="comment">//sessionholder 初始化</span></span><br><span class="line">    SessionHolder.init(parameterParser.getStoreMode());</span><br><span class="line">    <span class="comment">//创建默认协调器</span></span><br><span class="line">    DefaultCoordinator coordinator = <span class="keyword">new</span> DefaultCoordinator(rpcServer);</span><br><span class="line">    coordinator.init();</span><br><span class="line">    rpcServer.setHandler(coordinator);</span><br><span class="line">    <span class="comment">// 注册关闭钩子</span></span><br><span class="line">    ShutdownHook.getInstance().addDisposable(coordinator);</span><br><span class="line">    ShutdownHook.getInstance().addDisposable(rpcServer);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//127.0.0.1 and 0.0.0.0 are not valid here.</span></span><br><span class="line">    <span class="keyword">if</span> (NetUtil.isValidIp(parameterParser.getHost(), <span class="keyword">false</span>)) &#123;</span><br><span class="line">        XID.setIpAddress(parameterParser.getHost());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        XID.setIpAddress(NetUtil.getLocalIp());</span><br><span class="line">    &#125;</span><br><span class="line">    XID.setPort(rpcServer.getListenPort());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">//启动</span></span><br><span class="line">        rpcServer.init();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">        LOGGER.error(<span class="string">"rpcServer init error:&#123;&#125;"</span>, e.getMessage(), e);</span><br><span class="line">        System.exit(-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    System.exit(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>主要流程：</p>
+<ul>
+<li>1.解析启动参数</li>
+<li>2.初始化度量</li>
+<li>3.初始化netty server</li>
+<li>4.初始化sessionholder</li>
+<li>5.初始化默认协调器</li>
+<li>6.启动netty server</li>
+</ul>
+<h4 id="参数解析"><a href="#参数解析" class="headerlink" title="参数解析"></a>参数解析</h4><blockquote>
+<p>ParameterParser parameterParser = new ParameterParser(args);</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ParameterParser</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.init(args);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">boolean</span> inContainer = <span class="keyword">this</span>.isRunningInContainer();</span><br><span class="line">        <span class="comment">//判断是否使用了容器Kubernetes/docker</span></span><br><span class="line">        <span class="keyword">if</span> (inContainer) &#123;</span><br><span class="line">            <span class="keyword">if</span> (LOGGER.isInfoEnabled()) &#123;</span><br><span class="line">                LOGGER.info(<span class="string">"The server is running in container."</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//多配置环境</span></span><br><span class="line">            <span class="keyword">this</span>.seataEnv = StringUtils.trimToNull(System.getenv(ENV_SYSTEM_KEY));</span><br><span class="line">            <span class="comment">//host地址</span></span><br><span class="line">            <span class="keyword">this</span>.host = StringUtils.trimToNull(System.getenv(ENV_SEATA_IP_KEY));</span><br><span class="line">            <span class="comment">//server节点id</span></span><br><span class="line">            <span class="keyword">this</span>.serverNode = NumberUtils.toInt(System.getenv(ENV_SERVER_NODE_KEY), SERVER_DEFAULT_NODE);</span><br><span class="line">            <span class="comment">//端口号</span></span><br><span class="line">            <span class="keyword">this</span>.port = NumberUtils.toInt(System.getenv(ENV_SEATA_PORT_KEY), SERVER_DEFAULT_PORT);</span><br><span class="line">            <span class="comment">//存储模式</span></span><br><span class="line">            <span class="keyword">this</span>.storeMode = StringUtils.trimToNull(System.getenv(ENV_STORE_MODE_KEY));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//JCommander 解析参数</span></span><br><span class="line">            JCommander jCommander = JCommander.newBuilder().addObject(<span class="keyword">this</span>).build();</span><br><span class="line">            jCommander.parse(args);</span><br><span class="line">            <span class="keyword">if</span> (help) &#123;</span><br><span class="line">                jCommander.setProgramName(PROGRAM_NAME);</span><br><span class="line">                jCommander.usage();</span><br><span class="line">                System.exit(<span class="number">0</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (StringUtils.isNotBlank(seataEnv)) &#123;</span><br><span class="line">            System.setProperty(ENV_PROPERTY_KEY, seataEnv);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (StringUtils.isBlank(storeMode)) &#123;</span><br><span class="line">            storeMode = ConfigurationFactory.getInstance().getConfig(ConfigurationKeys.STORE_MODE,</span><br><span class="line">                SERVER_DEFAULT_STORE_MODE);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ParameterException e) &#123;</span><br><span class="line">        printError(e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>主要解析参数中的存储模式、环境配置，ip端口。</p>
+<h4 id="初始化server"><a href="#初始化server" class="headerlink" title="初始化server"></a>初始化server</h4><blockquote>
+<p>RpcServer rpcServer = new RpcServer(WORKING_THREADS);</p>
+</blockquote>
+<p>构造器初始化父类构造器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">AbstractRpcRemotingServer</span><span class="params">(<span class="keyword">final</span> ThreadPoolExecutor messageExecutor, NettyServerConfig nettyServerConfig)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(messageExecutor);</span><br><span class="line">    <span class="comment">//初始化RpcServer</span></span><br><span class="line">    serverBootstrap = <span class="keyword">new</span> RpcServerBootstrap(nettyServerConfig);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>根据配置判断初始化EventLoopGroup</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">RpcServerBootstrap</span><span class="params">(NettyServerConfig nettyServerConfig)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.nettyServerConfig = nettyServerConfig;</span><br><span class="line">    <span class="comment">//根据配置判断初始化根据配置判断初始化EventLoopGroup</span></span><br><span class="line">    <span class="keyword">if</span> (NettyServerConfig.enableEpoll()) &#123;</span><br><span class="line">        <span class="keyword">this</span>.eventLoopGroupBoss = <span class="keyword">new</span> EpollEventLoopGroup(nettyServerConfig.getBossThreadSize(),</span><br><span class="line">            <span class="keyword">new</span> NamedThreadFactory(nettyServerConfig.getBossThreadPrefix(), nettyServerConfig.getBossThreadSize()));</span><br><span class="line">        <span class="keyword">this</span>.eventLoopGroupWorker = <span class="keyword">new</span> EpollEventLoopGroup(nettyServerConfig.getServerWorkerThreads(),</span><br><span class="line">            <span class="keyword">new</span> NamedThreadFactory(nettyServerConfig.getWorkerThreadPrefix(),</span><br><span class="line">                nettyServerConfig.getServerWorkerThreads()));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.eventLoopGroupBoss = <span class="keyword">new</span> NioEventLoopGroup(nettyServerConfig.getBossThreadSize(),</span><br><span class="line">            <span class="keyword">new</span> NamedThreadFactory(nettyServerConfig.getBossThreadPrefix(), nettyServerConfig.getBossThreadSize()));</span><br><span class="line">        <span class="keyword">this</span>.eventLoopGroupWorker = <span class="keyword">new</span> NioEventLoopGroup(nettyServerConfig.getServerWorkerThreads(),</span><br><span class="line">            <span class="keyword">new</span> NamedThreadFactory(nettyServerConfig.getWorkerThreadPrefix(),</span><br><span class="line">                nettyServerConfig.getServerWorkerThreads()));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 构造设置端口，防止端口为空</span></span><br><span class="line">    setListenPort(nettyServerConfig.getDefaultListenPort());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="SessionHolder初始化"><a href="#SessionHolder初始化" class="headerlink" title="SessionHolder初始化"></a>SessionHolder初始化</h4><blockquote>
+<p>SessionHolder.init(parameterParser.getStoreMode());</p>
+</blockquote>
+<p>根据持久化配置file/db,去初始化sessionManager 进行session管理和持久化，主要包括下面四种</p>
+<ul>
+<li><code>ROOT_SESSION_MANAGER</code> root session manager</li>
+<li><code>ASYNC_COMMITTING_SESSION_MANAGER</code>异步提交session manager</li>
+<li><code>RETRY_COMMITTING_SESSION_MANAGER</code>重试提交session manager</li>
+<li><code>RETRY_ROLLBACKING_SESSION_MANAGER</code>重试回滚session manager</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(String mode)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (StringUtils.isBlank(mode)) &#123;</span><br><span class="line">        mode = CONFIG.getConfig(ConfigurationKeys.STORE_MODE);</span><br><span class="line">    &#125;</span><br><span class="line">    StoreMode storeMode = StoreMode.get(mode);</span><br><span class="line">    <span class="comment">//DB 方式</span></span><br><span class="line">    <span class="keyword">if</span> (StoreMode.DB.equals(storeMode)) &#123;</span><br><span class="line">        <span class="comment">//初始化四种sessionmanager</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="comment">// File 方式</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (StoreMode.FILE.equals(storeMode)) &#123;</span><br><span class="line">        <span class="comment">//初始化四种sessionmanager</span></span><br><span class="line">        ...</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"unknown store mode:"</span> + mode);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//reload是否需要进行回滚或提交</span></span><br><span class="line">    <span class="comment">//处理未完成的事务</span></span><br><span class="line">    reload();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="TC协调器初始化"><a href="#TC协调器初始化" class="headerlink" title="TC协调器初始化"></a>TC协调器初始化</h4><blockquote>
+<p>DefaultCoordinator coordinator = new DefaultCoordinator(rpcServer);<br>  coordinator.init();</p>
+</blockquote>
+<p>创建默认的TC协调器，并将server与其组合，主要看<code>init</code>方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    retryRollbacking.scheduleAtFixedRate(() -&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            handleRetryRollbacking();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOGGER.info(<span class="string">"Exception retry rollbacking ... "</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, <span class="number">0</span>, ROLLBACKING_RETRY_PERIOD, TimeUnit.MILLISECONDS);</span><br><span class="line"></span><br><span class="line">    retryCommitting.scheduleAtFixedRate(() -&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            handleRetryCommitting();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOGGER.info(<span class="string">"Exception retry committing ... "</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, <span class="number">0</span>, COMMITTING_RETRY_PERIOD, TimeUnit.MILLISECONDS);</span><br><span class="line"></span><br><span class="line">    asyncCommitting.scheduleAtFixedRate(() -&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            handleAsyncCommitting();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOGGER.info(<span class="string">"Exception async committing ... "</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, <span class="number">0</span>, ASYNC_COMMITTING_RETRY_PERIOD, TimeUnit.MILLISECONDS);</span><br><span class="line"></span><br><span class="line">    timeoutCheck.scheduleAtFixedRate(() -&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            timeoutCheck();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOGGER.info(<span class="string">"Exception timeout checking ... "</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, <span class="number">0</span>, TIMEOUT_RETRY_PERIOD, TimeUnit.MILLISECONDS);</span><br><span class="line"></span><br><span class="line">    undoLogDelete.scheduleAtFixedRate(() -&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            undoLogDelete();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOGGER.info(<span class="string">"Exception undoLog deleting ... "</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, UNDO_LOG_DELAY_DELETE_PERIOD, UNDO_LOG_DELETE_PERIOD, TimeUnit.MILLISECONDS);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>init</code>方法主要是添加定时任务，处理提交回滚删除日志等操作</p>
+<h4 id="启动server"><a href="#启动server" class="headerlink" title="启动server"></a>启动server</h4><blockquote>
+<p>rpcServer.init();</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//实例化默认的服务消息监听器，包括事务消息、RM注册消息、TM注册消息、检查消息</span></span><br><span class="line">    DefaultServerMessageListenerImpl defaultServerMessageListenerImpl =</span><br><span class="line">        <span class="keyword">new</span> DefaultServerMessageListenerImpl(getTransactionMessageHandler());</span><br><span class="line">    <span class="comment">//初始化日志处理线程池</span></span><br><span class="line">    defaultServerMessageListenerImpl.init();</span><br><span class="line">    defaultServerMessageListenerImpl.setServerMessageSender(<span class="keyword">this</span>);</span><br><span class="line">    <span class="keyword">super</span>.setServerMessageListener(defaultServerMessageListenerImpl);</span><br><span class="line">    <span class="comment">//添加channelhandler</span></span><br><span class="line">    <span class="keyword">super</span>.setChannelHandlers(<span class="keyword">new</span> ServerHandler());</span><br><span class="line">    <span class="comment">//核心方法</span></span><br><span class="line">    <span class="keyword">super</span>.init();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>进入<code>init</code>方法,<code>AbstractRpcRemotingServer.init()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//启动超时消息定时任务</span></span><br><span class="line">    <span class="keyword">super</span>.init();</span><br><span class="line">    <span class="comment">//启动服务</span></span><br><span class="line">    serverBootstrap.start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>跟入<code>serverBootstrap.start();</code>,这里就是服务的初始化</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//设置channel参数</span></span><br><span class="line">    <span class="keyword">this</span>.serverBootstrap.group(<span class="keyword">this</span>.eventLoopGroupBoss, <span class="keyword">this</span>.eventLoopGroupWorker)</span><br><span class="line">        .channel(nettyServerConfig.SERVER_CHANNEL_CLAZZ)</span><br><span class="line">        .option(ChannelOption.SO_BACKLOG, nettyServerConfig.getSoBackLogSize())</span><br><span class="line">        .option(ChannelOption.SO_REUSEADDR, <span class="keyword">true</span>)</span><br><span class="line">        .childOption(ChannelOption.SO_KEEPALIVE, <span class="keyword">true</span>)</span><br><span class="line">        .childOption(ChannelOption.TCP_NODELAY, <span class="keyword">true</span>)</span><br><span class="line">        .childOption(ChannelOption.SO_SNDBUF, nettyServerConfig.getServerSocketSendBufSize())</span><br><span class="line">        .childOption(ChannelOption.SO_RCVBUF, nettyServerConfig.getServerSocketResvBufSize())</span><br><span class="line">        .childOption(ChannelOption.WRITE_BUFFER_WATER_MARK,</span><br><span class="line">            <span class="keyword">new</span> WriteBufferWaterMark(nettyServerConfig.getWriteBufferLowWaterMark(),</span><br><span class="line">                nettyServerConfig.getWriteBufferHighWaterMark()))</span><br><span class="line">        .localAddress(<span class="keyword">new</span> InetSocketAddress(listenPort))</span><br><span class="line">        .childHandler(<span class="keyword">new</span> ChannelInitializer&lt;SocketChannel&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initChannel</span><span class="params">(SocketChannel ch)</span> </span>&#123;</span><br><span class="line">                ch.pipeline().addLast(<span class="keyword">new</span> IdleStateHandler(nettyServerConfig.getChannelMaxReadIdleSeconds(), <span class="number">0</span>, <span class="number">0</span>))</span><br><span class="line">                    .addLast(<span class="keyword">new</span> ProtocolV1Decoder())</span><br><span class="line">                    .addLast(<span class="keyword">new</span> ProtocolV1Encoder());</span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">null</span> != channelHandlers) &#123;</span><br><span class="line">                    addChannelPipelineLast(ch, channelHandlers);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        ChannelFuture future = <span class="keyword">this</span>.serverBootstrap.bind(listenPort).sync();</span><br><span class="line">        LOGGER.info(<span class="string">"Server started ... "</span>);</span><br><span class="line">        <span class="comment">//高可用注册</span></span><br><span class="line">        RegistryFactory.getInstance().register(<span class="keyword">new</span> InetSocketAddress(XID.getIpAddress(), XID.getPort()));</span><br><span class="line">        initialized.set(<span class="keyword">true</span>);</span><br><span class="line">        future.channel().closeFuture().sync();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception exx) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(exx);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>主要是netty参数的配置并启动，到这里也就完成了SeataServer的初始化及启动。通过seata-server的源码看出，其内部使用netty作为服务器，并且用到大量线程池和定时任务去提高性能。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/25/seata-about/" rel="next" title="seata-about">
+                <i class="fa fa-chevron-left"></i> seata-about
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wei</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Server启动流程"><span class="nav-number">1.</span> <span class="nav-text">Server启动流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数解析"><span class="nav-number">1.1.</span> <span class="nav-text">参数解析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#初始化server"><span class="nav-number">1.2.</span> <span class="nav-text">初始化server</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SessionHolder初始化"><span class="nav-number">1.3.</span> <span class="nav-text">SessionHolder初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TC协调器初始化"><span class="nav-number">1.4.</span> <span class="nav-text">TC协调器初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#启动server"><span class="nav-number">1.5.</span> <span class="nav-text">启动server</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wei</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
