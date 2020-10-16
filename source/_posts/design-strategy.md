@@ -92,22 +92,20 @@ public class TourRouteSystem {
 
     public void planningTourRoute(String mode){
 
+        TourRouteContext tourRouteContext = new TourRouteContext();
+
         if("bike".equals(mode)){
-            TourRouteContext tourRouteContext = new TourRouteContext(new BikeStrategy());
-            tourRouteContext.executeStrategy();
+            tourRouteContext.setStrategy(new BikeStrategy());
         } else if("car".equals(mode)){
-            TourRouteContext tourRouteContext = new TourRouteContext(new CarStrategy());
-            tourRouteContext.executeStrategy();
+            tourRouteContext.setStrategy(new CarStrategy());
         }else if("bus".equals(mode)){
-            TourRouteContext tourRouteContext = new TourRouteContext(new BusStrategy());
-            tourRouteContext.executeStrategy();
+            tourRouteContext.setStrategy(new BusStrategy());
         }else if("subway".equals(mode)){
-            TourRouteContext tourRouteContext = new TourRouteContext(new SubwayStrategy());
-            tourRouteContext.executeStrategy();
+            tourRouteContext.setStrategy(new SubwayStrategy());
         }else{
-            TourRouteContext tourRouteContext = new TourRouteContext(new WalkStrategy());
-            tourRouteContext.executeStrategy();
+            tourRouteContext.setStrategy(new WalkStrategy());
         }
+        tourRouteContext.executeStrategy();
     }
 }
 
@@ -129,5 +127,5 @@ public class TourRouteSystem {
 ```
 
 
-策略模式可以将不同的业务逻辑与算法隔离开，降低了耦合性
+策略模式让你能将不同行为抽取到一个独立类层次结构中, 从而减少重复代码。
 
