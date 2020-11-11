@@ -229,6 +229,139 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/11/design-bridge/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yang">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/11/11/design-bridge/" itemprop="url">设计模式-桥接模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-11T18:55:05+00:00">
+                2020-11-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="桥接模式"><a href="#桥接模式" class="headerlink" title="桥接模式"></a>桥接模式</h2><blockquote>
+<p>将抽象部分与它的实现部分分离，使它们都可以独立地变化.</p>
+</blockquote>
+<p>假设咖啡机器可以生产咖啡，后面增加生产大杯小杯中杯的功能需求，对机器进行了改造。后面有人不喜欢喝咖啡要喝开水或者可乐牛奶，又要对机器进行改造。如果后面又扩展了其他饮品或者其他尺寸，机器就会越来越臃肿。 其实饮品和大小中杯就属于不同的维度，同时这两个维度都可以进行扩展，我们就可以通过桥接模式将这两个维度连接起来</p>
+<p>桥接模式包含角色：  </p>
+<ul>
+<li>Abstraction（抽象类）：维护了一个Implementor的关联关系，一般为抽象类</li>
+<li>RefinedAbstraction（扩充实现类）：扩充由Abstraction定义的接口，实现其中的抽象方法</li>
+<li>Implementor（实现类接口）：提供了一些基本方法，Abstraction通过与其的关联关系，可以调用其基本方法，使用关联关系替代继承关系</li>
+<li>ConcreteImplementor（具体实现类）：实现Implementor接口，为Abstraction抽象类提供基本方法具体实现
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/11/11/design-bridge/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/09/design-observer/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1362,143 +1495,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/25/seata-server/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yang">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/04/25/seata-server/" itemprop="url">seata-server</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-04-25T11:32:50+00:00">
-                2020-04-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <blockquote>
-<p>版本:1.2.0</p>
-</blockquote>
-<p>Seata主要包括三大组件:TC、TM和RM。TC（Transaction Coordinator）主要负责全局事务的提交和回滚，是seata的关键组件。对可用性及性能都有着较高的要求。</p>
-<p>seata TC实现源码Server的各个包：</p>
-<ul>
-<li>coordinator:协调器核心模块</li>
-<li>event:事件管理模块</li>
-<li>lock:资源锁模块</li>
-<li>metrics: metrics指标模块</li>
-<li>session:session通信模块</li>
-<li>storage:事务信息存储模块，file和DB</li>
-<li>store:存储配置模块</li>
-<li>transaction:事务模块
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2020/04/25/seata-server/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1549,7 +1545,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
