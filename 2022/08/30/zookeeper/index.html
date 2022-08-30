@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yoursite.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="概念ZooKeeper主要服务于分布式系统，可以用ZooKeeper来做：统一配置管理、统一命名服务、分布式锁、集群管理。 Znodezookeeper 的数据存储结构类似于unix文件系统，可以看成一棵树，每个节点就是znode。每个节点可以通过路径表达。而数据则存储在各个节点上，通过节点路径获取数据。 znode类型znode 存在以下四种类型  持久（PERSISTENT）节点：一旦创建就一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="zookeeper">
+<meta property="og:url" content="http://yoursite.com/2022/08/30/zookeeper/index.html">
+<meta property="og:site_name" content="Yang">
+<meta property="og:description" content="概念ZooKeeper主要服务于分布式系统，可以用ZooKeeper来做：统一配置管理、统一命名服务、分布式锁、集群管理。 Znodezookeeper 的数据存储结构类似于unix文件系统，可以看成一棵树，每个节点就是znode。每个节点可以通过路径表达。而数据则存储在各个节点上，通过节点路径获取数据。 znode类型znode 存在以下四种类型  持久（PERSISTENT）节点：一旦创建就一">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-08-30T22:15:49.000Z">
+<meta property="article:modified_time" content="2022-08-30T15:27:21.552Z">
+<meta property="article:author" content="wei">
+<meta property="article:tag" content="zookeeper">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://yoursite.com/2022/08/30/zookeeper/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://yoursite.com/2022/08/30/zookeeper/","path":"2022/08/30/zookeeper/","title":"zookeeper"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>zookeeper | Yang</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Yang</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Znode"><span class="nav-number">2.</span> <span class="nav-text">Znode</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#znode%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.1.</span> <span class="nav-text">znode类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#znode%E7%8A%B6%E6%80%81"><span class="nav-number">2.2.</span> <span class="nav-text">znode状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#znode%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6"><span class="nav-number">2.3.</span> <span class="nav-text">znode权限控制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#watcher"><span class="nav-number">3.</span> <span class="nav-text">watcher</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zookeeper%E9%9B%86%E7%BE%A4"><span class="nav-number">4.</span> <span class="nav-text">zookeeper集群</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E8%A7%92%E8%89%B2"><span class="nav-number">4.1.</span> <span class="nav-text">集群角色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E4%B8%BE%E8%BF%87%E7%A8%8B"><span class="nav-number">4.2.</span> <span class="nav-text">选举过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zookeeper%E5%B8%B8%E7%94%A8%E5%8A%9F%E8%83%BD"><span class="nav-number">5.</span> <span class="nav-text">zookeeper常用功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E5%8A%9F%E8%83%BD"><span class="nav-number">5.1.</span> <span class="nav-text">分布式锁功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83"><span class="nav-number">5.2.</span> <span class="nav-text">注册中心</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">wei</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/08/30/zookeeper/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wei">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="zookeeper | Yang">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          zookeeper
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2022-08-30 22:15:49 / Modified: 15:27:21" itemprop="dateCreated datePublished" datetime="2022-08-30T22:15:49+00:00">2022-08-30</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>ZooKeeper主要<strong>服务于分布式系统</strong>，可以用ZooKeeper来做：统一配置管理、统一命名服务、分布式锁、集群管理。</p>
+<h2 id="Znode"><a href="#Znode" class="headerlink" title="Znode"></a>Znode</h2><p>zookeeper 的数据存储结构类似于unix文件系统，可以看成一棵树，每个节点就是znode。每个节点可以通过路径表达。而数据则存储在各个节点上，通过节点路径获取数据。</p>
+<h3 id="znode类型"><a href="#znode类型" class="headerlink" title="znode类型"></a>znode类型</h3><p>znode 存在以下四种类型</p>
+<ul>
+<li><p><strong>持久（PERSISTENT）节点</strong>：一旦创建就一直存在，直至zookeeper宕机。可以创建子节点</p>
+</li>
+<li><p><strong>临时（EPHEMERAL）节点</strong>：临时节点生命周期与客户端会话（session）绑定，一旦客户端断开链接则自动删除该节点。并且，<strong>临时节点只能做叶子节点</strong> ，不能创建子节点，只能作为叶子节点。</p>
+</li>
+<li><p><strong>持久顺序（PERSISTENT_SEQUENTIAL）节点</strong>：与持久节点生命周期一致，不过节点存在顺序，节点名一致时会默认添加序号，&#x2F;b0000000001,&#x2F;b0000000002</p>
+</li>
+<li><p><strong>临时顺序（EPHEMERAL_SEQUENTIAL）节点</strong>：与临时节点生命周期一致，不允许创建子节点，相同节点名会默认添加顺序序号</p>
+<span id="more"></span></li>
+</ul>
+<h3 id="znode状态"><a href="#znode状态" class="headerlink" title="znode状态"></a>znode状态</h3><p>zookeeper存储了znode的状态信息，通过stat 获取</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cZxid = 0x1f1</span><br><span class="line">ctime = Sat May 07 14:51:17 CST 2022</span><br><span class="line">mZxid = 0x1f1</span><br><span class="line">mtime = Sat May 07 14:51:17 CST 2022</span><br><span class="line">pZxid = 0x1f1</span><br><span class="line">cversion = 0</span><br><span class="line">dataVersion = 0</span><br><span class="line">aclVersion = 0</span><br><span class="line">ephemeralOwner = 0x0</span><br><span class="line">dataLength = 3</span><br><span class="line">numChildren = 0</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>状态信息</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>cZxid</td>
+<td>create ZXID，即该数据节点被创建时的事务 id</td>
+</tr>
+<tr>
+<td>ctime</td>
+<td>create time，即该节点的创建时间</td>
+</tr>
+<tr>
+<td>mZxid</td>
+<td>modified ZXID，即该节点最终一次更新时的事务 id</td>
+</tr>
+<tr>
+<td>mtime</td>
+<td>modified time，即该节点最后一次的更新时间</td>
+</tr>
+<tr>
+<td>pZxid</td>
+<td>该节点的子节点列表最后一次修改时的事务 id，只有子节点列表变更才会更新 pZxid，子节点内容变更不会更新</td>
+</tr>
+<tr>
+<td>cversion</td>
+<td>子节点版本号，当前节点的子节点每次变化时值增加 1</td>
+</tr>
+<tr>
+<td>dataVersion</td>
+<td>数据节点内容版本号，节点创建时为 0，每更新一次节点内容(不管内容有无变化)该版本号的值增加 1</td>
+</tr>
+<tr>
+<td>aclVersion</td>
+<td>节点的 ACL 版本号，表示该节点 ACL 信息变更次数</td>
+</tr>
+<tr>
+<td>ephemeralOwner</td>
+<td>创建该临时节点的会话的 sessionId；如果当前节点为持久节点，则 ephemeralOwner&#x3D;0</td>
+</tr>
+<tr>
+<td>dataLength</td>
+<td>数据节点内容长度</td>
+</tr>
+<tr>
+<td>numChildren</td>
+<td>当前节点的子节点个数</td>
+</tr>
+</tbody></table>
+<h3 id="znode权限控制"><a href="#znode权限控制" class="headerlink" title="znode权限控制"></a>znode权限控制</h3><p>ZooKeeper 采用 ACL（AccessControlLists）策略来进行权限控制，类似于 UNIX 文件系统的权限控制。Zookeeper 定义了如下5种权限</p>
+<ul>
+<li><p>create：创建子节点的权限</p>
+</li>
+<li><p>delete：删除子节点的权限</p>
+</li>
+<li><p>read：读取节点的权限</p>
+</li>
+<li><p>write：写节点的权限</p>
+</li>
+<li><p>admin：设置节点acl的权限</p>
+</li>
+</ul>
+<p>CREATE和DELETE这两种权限都是针对子节点的权限控制，以上五种权限简称cdrwa。</p>
+<p>acl控制的znode的权限，节点间的权限不具备继承性，即子节点不继承父节点的权限。acl提供了下面四种方式进行权限控制。</p>
+<ul>
+<li><p>world:表示任何人都可以访问</p>
+</li>
+<li><p>auth：只有认证的用户可以访问</p>
+</li>
+<li><p>digest：用户名密码的验证方式</p>
+</li>
+<li><p>host&#x2F;ip:使用客户机的ip地址认证</p>
+</li>
+</ul>
+<h2 id="watcher"><a href="#watcher" class="headerlink" title="watcher"></a>watcher</h2><p>znode提供了zookeeper的数据存储机制，而watcher是监听znode变动所设计的核心功能。客户端watcher监听节点的数据状态变化，一旦发生节点发生变化，zookeeper会通知所有监听该节点的客户端，从而做出相应的动作。</p>
+<p>zookeeper的大部分使用场景都是基于watcher机制，比如服务发现与注册，当服务节点发生变化，订阅服务的消费者可以拉取最新的服务，实现服务的动态发布更新。</p>
+<p>watcher对节点的监听是一次性的，当服务端通知了watcher节点的状态变化，便会删除所以监听该节点的watcher，所以需要在收到通知后再次监听该节点，否则客户端只能接收到一次该节点的变更通知。</p>
+<h2 id="zookeeper集群"><a href="#zookeeper集群" class="headerlink" title="zookeeper集群"></a>zookeeper集群</h2><p>为了保证高可用，zookeeper的集群是必须的，避免由于zookeeper的宕机导致整个系统的崩溃。通常 3 台服务器就可以构成一个 ZooKeeper 集群。</p>
+<h3 id="集群角色"><a href="#集群角色" class="headerlink" title="集群角色"></a>集群角色</h3><p>zookeeper集群并不是通常意义上的master\slave模式，它设计了三种角色，分别是Leader、Follower、Observer。Leader可以提供数据读写，而Follower与Observer只能提供数据读权限，而Follower与Observer的区别是，Observer不参与到集群Leader的选举过程。</p>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Leader</td>
+<td>为客户端提供读和写的服务，负责投票的发起和决议，更新系统状态。</td>
+</tr>
+<tr>
+<td>Follower</td>
+<td>为客户端提供读服务，如果是写服务则转发给 Leader。在Leader选举过程中参与投票。</td>
+</tr>
+<tr>
+<td>Observer</td>
+<td>为客户端提供读服务器，如果是写服务则转发给 Leader。不参与选举过程中的投票。</td>
+</tr>
+</tbody></table>
+<h3 id="选举过程"><a href="#选举过程" class="headerlink" title="选举过程"></a>选举过程</h3><p>zookeeper 中的leader是通过集群选举产生，当集群启动或者leader服务器发生宕机网络波动重启等情况都会触发选举过程。</p>
+<p>选举过程大致如下：</p>
+<ul>
+<li><p>1.每个server会先投票给自己，然后接收集群中的各个服务器的投票数据，投票中包含了SID（服务器的唯一标识）和ZXID（事务ID）</p>
+</li>
+<li><p>2.检查投票，优先检查ZXID(事务ID)，ZXID大者胜出；如果ZXID相同，那么就比较SID，SID大者胜出。</p>
+</li>
+<li><p>3.确定Leader，投票完成后服务器会统计投票信息，如果一台机器收到了超过半数的投票，那么这个投票对应的SID机器即为Leader。</p>
+</li>
+</ul>
+<p>因为投票结果必须保证大于半数，因此zookeeper集群数则必须保证是奇数台。</p>
+<h2 id="zookeeper常用功能"><a href="#zookeeper常用功能" class="headerlink" title="zookeeper常用功能"></a>zookeeper常用功能</h2><h3 id="分布式锁功能"><a href="#分布式锁功能" class="headerlink" title="分布式锁功能"></a>分布式锁功能</h3><p>zookeeper实现分布式锁主要通过znode节点特性与watcher机制，当获取分布式锁时创建临时节点（客户端断开连接时可释放锁，使用临时节点防止锁无法被正常释放），释放锁时删除该节点，当其他应用获取分布式锁失败监听该节点的状态变化，当锁被释放时竞争锁。方案如下：</p>
+<p>通过创建临时节点获取当前锁，如果当前临时节点是顺序最小的，则获取锁，否则监听上一个比自己小的节点。当上一个节点被删除则获取到锁，释放锁时删除临时节点，通过临时顺序节点+watcher机制实现分布式锁。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.curator.framework.CuratorFramework;</span><br><span class="line"><span class="keyword">import</span> org.apache.curator.framework.CuratorFrameworkFactory;</span><br><span class="line"><span class="keyword">import</span> org.apache.curator.framework.recipes.cache.NodeCache;</span><br><span class="line"><span class="keyword">import</span> org.apache.curator.retry.ExponentialBackoffRetry;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.CreateMode;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.data.Stat;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Collections;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ArrayBlockingQueue;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.CountDownLatch;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ExecutorService;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ThreadFactory;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ThreadPoolExecutor;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ZookeeperLock</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> CuratorFramework client;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">BASE_PATH</span> <span class="operator">=</span> <span class="string">&quot;/lock&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">ZK_LOCK_PATH</span> <span class="operator">=</span> <span class="string">&quot;/zk_&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ThreadLocal&lt;String&gt; CURRENT_NODE = <span class="keyword">new</span> <span class="title class_">ThreadLocal</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        client = CuratorFrameworkFactory.newClient(<span class="string">&quot;127.0.0.1:2181&quot;</span>, <span class="keyword">new</span> <span class="title class_">ExponentialBackoffRetry</span>(<span class="number">1000</span>, <span class="number">3</span>));</span><br><span class="line">        client.start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">tryLock</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (CURRENT_NODE.get()==<span class="literal">null</span>||CURRENT_NODE.get().trim().length()==<span class="number">0</span>) &#123;</span><br><span class="line">                <span class="type">String</span> <span class="variable">currentNode</span> <span class="operator">=</span> client.create().withMode(CreateMode.EPHEMERAL_SEQUENTIAL).forPath(BASE_PATH + ZK_LOCK_PATH);</span><br><span class="line">                CURRENT_NODE.set(currentNode.substring(currentNode.lastIndexOf(<span class="string">&quot;/&quot;</span>) + <span class="number">1</span>));</span><br><span class="line">            &#125;</span><br><span class="line">            List&lt;String&gt; childNodes = client.getChildren().forPath(BASE_PATH);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (childNodes == <span class="literal">null</span> || childNodes.size() == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(<span class="string">&quot;锁未释放&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            Collections.sort(childNodes);</span><br><span class="line">            <span class="type">String</span> <span class="variable">minNode</span> <span class="operator">=</span> childNodes.get(<span class="number">0</span>);</span><br><span class="line">            <span class="type">String</span> <span class="variable">currentNode</span> <span class="operator">=</span> CURRENT_NODE.get();</span><br><span class="line">            <span class="comment">//当前线程二次获取锁</span></span><br><span class="line">            <span class="keyword">if</span> (minNode.equals(currentNode)) &#123;</span><br><span class="line">                System.out.println(CURRENT_NODE.get()+<span class="string">&quot;为锁节点&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//监听上一个临时顺序节点</span></span><br><span class="line">            <span class="type">String</span> <span class="variable">previousNode</span> <span class="operator">=</span> childNodes.get(childNodes.indexOf(currentNode) - <span class="number">1</span>);</span><br><span class="line">            <span class="type">NodeCache</span> <span class="variable">nodeCache</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NodeCache</span>(client, BASE_PATH + <span class="string">&quot;/&quot;</span> + previousNode, <span class="literal">false</span>);</span><br><span class="line">            nodeCache.start();</span><br><span class="line">            <span class="comment">//获取锁阻塞线程</span></span><br><span class="line">            <span class="type">CountDownLatch</span> <span class="variable">countDownLatch</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(<span class="number">1</span>);</span><br><span class="line">            nodeCache.getListenable().addListener(() -&gt; &#123;</span><br><span class="line">                <span class="type">Stat</span> <span class="variable">stat</span> <span class="operator">=</span> client.checkExists().forPath(BASE_PATH + <span class="string">&quot;/&quot;</span> + previousNode);</span><br><span class="line">                <span class="keyword">if</span> (stat == <span class="literal">null</span>) &#123;</span><br><span class="line">                    System.out.println(previousNode+<span class="string">&quot;节点被删除&quot;</span>);</span><br><span class="line">                    nodeCache.close();</span><br><span class="line">                    countDownLatch.countDown();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">            countDownLatch.await();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(CURRENT_NODE.get()+<span class="string">&quot;为锁节点&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">unLock</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (CURRENT_NODE.get()!=<span class="literal">null</span> &amp;&amp; CURRENT_NODE.get().trim().length()&gt;<span class="number">0</span>) &#123;</span><br><span class="line">                <span class="type">String</span> <span class="variable">currentNode</span> <span class="operator">=</span> CURRENT_NODE.get();</span><br><span class="line">                client.delete().forPath(BASE_PATH + <span class="string">&quot;/&quot;</span> + currentNode);</span><br><span class="line">                CURRENT_NODE.remove();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">ExecutorService</span> <span class="variable">executorService</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ThreadPoolExecutor</span>(<span class="number">4</span>, <span class="number">4</span>, <span class="number">1000l</span>, TimeUnit.SECONDS, <span class="keyword">new</span> <span class="title class_">ArrayBlockingQueue</span>&lt;&gt;(<span class="number">10</span>), <span class="keyword">new</span> <span class="title class_">ThreadFactory</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> Thread <span class="title function_">newThread</span><span class="params">(Runnable r)</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(r);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">            executorService.execute(() -&gt; &#123;</span><br><span class="line">                tryLock();</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    System.out.println(Thread.currentThread().getName()+<span class="string">&quot;获取到分布式锁&quot;</span>);</span><br><span class="line">                    Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                unLock();</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        executorService.shutdown();</span><br><span class="line">        <span class="keyword">if</span> (executorService.awaitTermination(<span class="number">10000</span>, TimeUnit.MILLISECONDS)) &#123;</span><br><span class="line">            executorService.shutdownNow();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述实现demo仅做演示，生产环境下建议使用Curator 封装的分布式锁。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">InterProcessMutex</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">InterProcessMutex</span>(client,<span class="string">&quot;/zookeeper/lock&quot;</span>);</span><br><span class="line">lock.acquire();</span><br><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">&#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">    lock.release();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="注册中心"><a href="#注册中心" class="headerlink" title="注册中心"></a>注册中心</h3><p>服务发布者将服务的各类信息发布到服务注册中心，例如ip，端口，参数等，而服务消费者通过订阅服务获取服务信息去调用服务。zookeeper通过其节点特性和watcher机制便能实现注册中心的功能。</p>
+<p>服务发布者在发布服务时创建节点，将服务信息存储在节点中。而消费者获取对应znode节点信息，然后调用远程服务，这就是一个简单的注册中心。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ZookeeperRegisterAndDiscovery</span> &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> CuratorFramework client;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">BASE_SERVICE</span> <span class="operator">=</span> <span class="string">&quot;/service&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        client = CuratorFrameworkFactory.newClient(<span class="string">&quot;127.0.0.1:2181&quot;</span>, <span class="keyword">new</span> <span class="title class_">ExponentialBackoffRetry</span>(<span class="number">1000</span>, <span class="number">3</span>));</span><br><span class="line">        client.start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 注册服务节点</span></span><br><span class="line"><span class="comment">     * |service|helloService</span></span><br><span class="line"><span class="comment">     * |--127.0.0.1:8091</span></span><br><span class="line"><span class="comment">     * |--127.0.0.1:8092</span></span><br><span class="line"><span class="comment">     * |--127.0.0.1:8093</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">registerService</span><span class="params">(ServiceInfo serviceInfo)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">path</span> <span class="operator">=</span> BASE_SERVICE + <span class="string">&quot;/&quot;</span> + serviceInfo.getServiceName() + <span class="string">&quot;/&quot;</span> + serviceInfo.getAddress() + <span class="string">&quot;:&quot;</span> + serviceInfo.getPort();</span><br><span class="line">        <span class="keyword">if</span> (client.checkExists().forPath(path) == <span class="literal">null</span>) &#123;</span><br><span class="line">            client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(</span><br><span class="line">                    BASE_SERVICE + <span class="string">&quot;/&quot;</span> + serviceInfo.getServiceName() + <span class="string">&quot;/&quot;</span> + serviceInfo.getAddress() + <span class="string">&quot;:&quot;</span> + serviceInfo.getPort()</span><br><span class="line">                    , serviceInfo.toString().getBytes(StandardCharsets.UTF_8));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 服务发现</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> ServiceInfo <span class="title function_">discoveryService</span><span class="params">(String serviceName)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        List&lt;String&gt; serviceInfos = client.getChildren().forPath(BASE_SERVICE + <span class="string">&quot;/&quot;</span> + serviceName);</span><br><span class="line">        <span class="keyword">return</span> loadBalance(serviceInfos, serviceName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 负载均衡</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> ServiceInfo <span class="title function_">loadBalance</span><span class="params">(List&lt;String&gt; serviceInfos, String serviceName)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> ThreadLocalRandom.current().nextInt(serviceInfos.size());</span><br><span class="line">        <span class="type">String</span> <span class="variable">s</span> <span class="operator">=</span> serviceInfos.get(i);</span><br><span class="line">        <span class="type">byte</span>[] bytes = client.getData().forPath(BASE_SERVICE + <span class="string">&quot;/&quot;</span> + serviceName + <span class="string">&quot;/&quot;</span> + s);</span><br><span class="line">        <span class="keyword">return</span> JsonUtils.parse(ServiceInfo.class, <span class="keyword">new</span> <span class="title class_">String</span>(bytes, StandardCharsets.UTF_8));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line"></span><br><span class="line">        <span class="type">ServiceInfo</span> <span class="variable">serviceInfo1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ServiceInfo</span>(<span class="string">&quot;127.0.0.1&quot;</span>, <span class="string">&quot;8091&quot;</span>, <span class="string">&quot;helloService&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class&#125;);</span><br><span class="line">        ZookeeperRegisterAndDiscovery.registerService(serviceInfo1);</span><br><span class="line">        <span class="type">ServiceInfo</span> <span class="variable">serviceInfo2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ServiceInfo</span>(<span class="string">&quot;127.0.0.1&quot;</span>, <span class="string">&quot;8092&quot;</span>, <span class="string">&quot;helloService&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class&#125;);</span><br><span class="line">        ZookeeperRegisterAndDiscovery.registerService(serviceInfo2);</span><br><span class="line">        <span class="type">ServiceInfo</span> <span class="variable">serviceInfo3</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ServiceInfo</span>(<span class="string">&quot;127.0.0.1&quot;</span>, <span class="string">&quot;8093&quot;</span>, <span class="string">&quot;helloService&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class&#125;);</span><br><span class="line">        ZookeeperRegisterAndDiscovery.registerService(serviceInfo3);</span><br><span class="line"></span><br><span class="line">        <span class="type">ServiceInfo</span> <span class="variable">discoveryService</span> <span class="operator">=</span> ZookeeperRegisterAndDiscovery.discoveryService(<span class="string">&quot;helloService&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 调用服务 callService(discoveryService);</span></span><br><span class="line">        System.out.println(discoveryService.toString());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">ServiceInfo</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> String address;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> String port;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> String serviceName;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> Class&lt;?&gt;[] parameterTypes;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">ServiceInfo</span><span class="params">()</span> &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">ServiceInfo</span><span class="params">(String address, String port, String serviceName, Class&lt;?&gt;[] parameterTypes)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.address = address;</span><br><span class="line">            <span class="built_in">this</span>.port = port;</span><br><span class="line">            <span class="built_in">this</span>.serviceName = serviceName;</span><br><span class="line">            <span class="built_in">this</span>.parameterTypes = parameterTypes;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setAddress</span><span class="params">(String address)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.address = address;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setPort</span><span class="params">(String port)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.port = port;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setServiceName</span><span class="params">(String serviceName)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.serviceName = serviceName;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setParameterTypes</span><span class="params">(Class&lt;?&gt;[] parameterTypes)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.parameterTypes = parameterTypes;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> String <span class="title function_">getAddress</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> address;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> String <span class="title function_">getPort</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> port;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> String <span class="title function_">getServiceName</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> serviceName;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> Class&lt;?&gt;[] getParameterTypes() &#123;</span><br><span class="line">            <span class="keyword">return</span> parameterTypes;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> JsonUtils.writeAsString(<span class="built_in">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述代码展示了服务发现与注册，完备的注册中心还需要服务上下线，健康检查，服务变更通知等。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/zookeeper/" rel="tag"># zookeeper</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/11/30/design-pattern/" rel="prev" title="设计模式">
+                  <i class="fa fa-chevron-left"></i> 设计模式
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wei</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
