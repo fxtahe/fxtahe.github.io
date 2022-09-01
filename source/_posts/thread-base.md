@@ -1,7 +1,12 @@
 ---
-title: thread-base
+title: 并发编程基础
 date: 2022-09-01 22:39:04
-tags: thread 
+categories: 
+- 并发编程
+tags:
+    - 多线程
+    - 线程池
+    - Future
 ---
 
 ## 线程

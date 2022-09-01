@@ -1,7 +1,10 @@
 ---
 title: zookeeper
 date: 2022-08-30 22:15:49
-tags: zookeeper
+categories:
+    - 中间件
+tags:
+    - zookeeper
 ---
 
 

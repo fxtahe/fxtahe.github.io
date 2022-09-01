@@ -2,10 +2,9 @@
 title: seata-about
 date: 2020-04-25 11:04:54
 categories:
-- Java
+- 中间件
 tags: 
 - seata
-- about
 ---
 ### 背景
 

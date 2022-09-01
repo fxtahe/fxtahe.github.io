@@ -1,7 +1,8 @@
 ---
 title: seata-server
 date: 2020-04-25 11:32:50
-tags:
+categories: 
+- 中间件
 ---
 > 版本:1.2.0
 
