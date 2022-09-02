@@ -125,7 +125,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -136,7 +136,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,6 +182,95 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/09/02/completableFuture/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/psc.jpg">
+      <meta itemprop="name" content="fxtahe">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Yang">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/09/02/completableFuture/" class="post-title-link" itemprop="url">CompletableFuture 异步编排</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-09-02 22:57:08 / 修改时间：15:01:52" itemprop="dateCreated datePublished" datetime="2022-09-02T22:57:08+00:00">2022-09-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">并发编程</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="从Future聊起"><a href="#从Future聊起" class="headerlink" title="从Future聊起"></a>从Future聊起</h2><p><code>Future</code>是java 1.5引入的异步编程api,它表示一个异步计算结果，提供了获取异步结果的能力，解决了多线程场景下<code>Runnable</code>线程任务无法获取结果的问题。  </p>
+<p>但是其获取异步结果的方式并不够优雅，我们必须使用Future.get的方式阻塞调用线程，或者使用轮询方式判断 Future.isDone 任务是否结束，再获取结果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Future</span>&lt;V&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//任务是否完成</span></span><br><span class="line">    <span class="type">boolean</span> <span class="title function_">isDone</span><span class="params">()</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//阻塞调用线程获取异步结果</span></span><br><span class="line">    V <span class="title function_">get</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException, ExecutionException;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//在指定时间内阻塞线程获取异步结果</span></span><br><span class="line">    V <span class="title function_">get</span><span class="params">(<span class="type">long</span> timeout, TimeUnit unit)</span></span><br><span class="line">        <span class="keyword">throws</span> InterruptedException, ExecutionException, TimeoutException;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>假如存在多个异步任务相互依赖，一个或多个异步线程任务需要依赖上一个异步线程任务结果，并且多个异步任务能够组合结果，显然这种阻塞线程的方式并不能优雅解决。我们更希望能够提供一种异步回调的方式，组合各种异步任务，而无需开发者对多个异步任务结果的监听编排。<br>为了解决优化上述问题，java8 新增了<code>CompletableFuture</code>API ,其大大扩展了<code>Future</code>能力，并提供了异步任务编排能力。  </p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/09/02/completableFuture/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/09/01/thread-base/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -210,9 +299,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-09-01 22:39:04 / 修改时间：15:54:02" itemprop="dateCreated datePublished" datetime="2022-09-01T22:39:04+00:00">2022-09-01</time>
+      <time title="创建时间：2022-09-01 22:39:04" itemprop="dateCreated datePublished" datetime="2022-09-01T22:39:04+00:00">2022-09-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-09-02 15:01:52" itemprop="dateModified" datetime="2022-09-02T15:01:52+00:00">2022-09-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -307,7 +402,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-09-01 15:54:02" itemprop="dateModified" datetime="2022-09-01T15:54:02+00:00">2022-09-01</time>
+      <time title="修改时间：2022-09-02 15:01:52" itemprop="dateModified" datetime="2022-09-02T15:01:52+00:00">2022-09-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -409,7 +504,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-09-01 15:54:02" itemprop="dateModified" datetime="2022-09-01T15:54:02+00:00">2022-09-01</time>
+      <time title="修改时间：2022-09-02 15:01:52" itemprop="dateModified" datetime="2022-09-02T15:01:52+00:00">2022-09-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -504,7 +599,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-09-01 15:54:02" itemprop="dateModified" datetime="2022-09-01T15:54:02+00:00">2022-09-01</time>
+      <time title="修改时间：2022-09-02 15:01:52" itemprop="dateModified" datetime="2022-09-02T15:01:52+00:00">2022-09-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -607,7 +702,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-09-01 15:54:02" itemprop="dateModified" datetime="2022-09-01T15:54:02+00:00">2022-09-01</time>
+      <time title="修改时间：2022-09-02 15:01:52" itemprop="dateModified" datetime="2022-09-02T15:01:52+00:00">2022-09-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -709,7 +804,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-09-01 15:54:02" itemprop="dateModified" datetime="2022-09-01T15:54:02+00:00">2022-09-01</time>
+      <time title="修改时间：2022-09-02 15:01:52" itemprop="dateModified" datetime="2022-09-02T15:01:52+00:00">2022-09-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -812,7 +907,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-09-01 15:54:02" itemprop="dateModified" datetime="2022-09-01T15:54:02+00:00">2022-09-01</time>
+      <time title="修改时间：2022-09-02 15:01:52" itemprop="dateModified" datetime="2022-09-02T15:01:52+00:00">2022-09-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -913,7 +1008,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-09-01 15:54:02" itemprop="dateModified" datetime="2022-09-01T15:54:02+00:00">2022-09-01</time>
+      <time title="修改时间：2022-09-02 15:01:52" itemprop="dateModified" datetime="2022-09-02T15:01:52+00:00">2022-09-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1016,7 +1111,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-09-01 15:54:02" itemprop="dateModified" datetime="2022-09-01T15:54:02+00:00">2022-09-01</time>
+      <time title="修改时间：2022-09-02 15:01:52" itemprop="dateModified" datetime="2022-09-02T15:01:52+00:00">2022-09-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1051,107 +1146,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/11/17/design-iterator/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/16/design-state/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/psc.jpg">
-      <meta itemprop="name" content="fxtahe">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yang">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Yang">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/11/16/design-state/" class="post-title-link" itemprop="url">设计模式-状态模式</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-11-16 22:20:37" itemprop="dateCreated datePublished" datetime="2020-11-16T22:20:37+00:00">2020-11-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-09-01 15:54:02" itemprop="dateModified" datetime="2022-09-01T15:54:02+00:00">2022-09-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="状态模式"><a href="#状态模式" class="headerlink" title="状态模式"></a>状态模式</h2><blockquote>
-<p>状态模式（State Pattern）当一个对象内在状态改变时允许其改变行为，这个对象看起来像改变了其类。</p>
-</blockquote>
-<p>状态模式允许修改对象状态，使其可在多个状态间转换，比如博客系统，一篇博客可能存在草稿、审阅、发布等状态，不同状态可任意转换。</p>
-<p>状态模式角色：</p>
-<ul>
-<li>State（抽象状态类）：接口或抽象类，负责对象状态定义，并且封装环境角色以实现状态切换。</li>
-<li>ConcreteState（具体状态类）：抽象状态类子类，实现特定于状态的方法。</li>
-<li>Context（环境类）：定义客户端需要的接口，并且负责具体状态的切换。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/11/16/design-state/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
