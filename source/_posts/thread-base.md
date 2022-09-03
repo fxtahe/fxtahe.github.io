@@ -84,12 +84,15 @@ public class MyRunnable implements Runnable{
 ```
 
 **关于两种实现方式：**
+这里所说的多线程实现其实是将线程的线程工作单元与任务执行单元糅合在了一起，本质上说**Java的线程模型抽象只有`Thread`，而`Runnable`只是任务执行单元**,从上面的demo便可以看出，`Runnable`实例依赖于`Thread`线程模型的执行，然后通过调用`start()`方法告知jvm 调度线程工作，调用`run()`完成任务执行。
+
 `Thread`类其实是Runnable接口的实现
 ```java
 public
 class Thread implements Runnable
 ```
-其实两种方式并没有可比性，本质为同一种东西，但是在创建线程的方式中推荐优先使用实现`Runnable`接口的方式,这主要是为了提高代码的可扩展性。因为Java只支持单继承
+所以`Thread`既可以作为一个线程，也可以作为一个线程任务执行 。
+java还提供了另外一个任务执行单元接口`Callable`,下面会介绍
 
 
 ### 线程池 ThreadPoolExecutor
@@ -236,8 +239,8 @@ java 线程池工具类`Executors` 提供了几种常用线程池
 - `V get()`:阻塞等待任务完成，并返回结果
 - `V get(long timeout, TimeUnit unit)`:在指定时间内阻塞等待任务完成，并返回结果
 
-#### Callable
-`Callable`与`Runnable`均被设计用于线程任务，但是`Callable`任务带返回值，并且可以抛出异常
+#### 带返回值的任务Callable
+`Callable`与`Runnable`均被设计用于线程任务，但是`Callable`任务带返回值，并且可以抛出异常，在需要获取返回值的场景中使用
 
 ```java
 @FunctionalInterface
